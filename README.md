@@ -30,9 +30,9 @@ docker run --rm -v $(pwd)/data:/data youcantbeserious/osm-build-pipeline
 | `MBTILES_FILENAME` | Output tiles filename                      | `${OSM_FILE}.mbtiles`        |
 | `PBF_EXPIRY_DAYS`  | Days before `.pbf` is considered stale     | `90`                         |
 
-## 🧰 run.sh
+## 🧰 Makefile Shortcuts
 
-Use the Shellscript to simplify builds and runs:
+Use the Makefile to simplify builds and runs:
 
 | Command        | Description                         |
 |----------------|-------------------------------------|
