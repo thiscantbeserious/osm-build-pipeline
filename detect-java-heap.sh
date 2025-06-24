@@ -1,26 +1,22 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ -f /sys/fs/cgroup/memory.max ]]; then
-  limit_bytes=$(cat /sys/fs/cgroup/memory.max)
-elif [[ -f /sys/fs/cgroup/memory/memory.limit_in_bytes ]]; then
-  limit_bytes=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)
-else
-  echo "⚠️ Unable to detect memory limit. Defaulting to -Xmx2g" >&2
-  echo "-Xmx2g"
-  exit 0
-fi
+# Get total memory (kB) from /proc/meminfo
+mem_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 
-if [[ "$limit_bytes" == "max" ]] || [[ "$limit_bytes" -ge 9223372036854771712 ]]; then
-  echo "⚠️ No memory limit set (or max). Defaulting to -Xmx2g" >&2
-  echo "-Xmx2g"
-  exit 0
-fi
+# Convert memory to GB
+mem_gb=$((mem_kb / 1024 / 1024))
 
-heap_gb=$((limit_bytes / 1024 / 1024 / 1024))
-heap_gb=$((heap_gb * 80 / 100))
+# Allocate 80% of total memory to heap
+heap_gb=$((mem_gb * 80 / 100))
+
+# Enforce minimum of 2 GB heap
 if (( heap_gb < 2 )); then
   heap_gb=2
 fi
 
+# Echo allocated heap size to stderr (so it always appears in logs)
+echo "✅ Allocating Java heap memory: ${heap_gb} GB" >&2
+
+# Output JVM flag for heap size
 echo "-Xmx${heap_gb}g"
