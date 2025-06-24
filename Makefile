@@ -11,3 +11,7 @@ push:
 
 run:
 	docker run --rm -v $(PWD)/data:/data $(IMAGE_NAME):$(TAG)
+
+stop:
+	docker ps -q --filter "ancestor=$(IMAGE_NAME):$(TAG)" | xargs -r docker stop
+

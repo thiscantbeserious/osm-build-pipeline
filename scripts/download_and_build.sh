@@ -24,7 +24,11 @@ echo "  PBF_EXPIRY_DAYS=$PBF_EXPIRY_DAYS"
 
 download_pbf() {
   echo "📥 Downloading PBF..."
-  curl -fL --retry 3 -o "$OSM_PATH" "$OSM_URL"
+  curl -fL --retry 3 --retry-delay 5 \
+      --connect-timeout 10 \
+      --max-time 600 \
+      --compressed \
+      -o "$OSM_PATH" "$OSM_URL"
 }
 
 validate_pbf() {
@@ -48,7 +52,6 @@ validate_pbf() {
   echo "✅ PBF file passed all validation checks"
   return 0
 }
-
 
 if [ -f "$OSM_PATH" ]; then
   if ! validate_pbf; then
