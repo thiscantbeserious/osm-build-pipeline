@@ -7,9 +7,11 @@ A minimal, two-stage Docker pipeline for:
 
 ## ✅ Features
 
+- Full Download & Build pipeline without manual steps
+- Configuratable timeframe which enforces re-download (defaults to > 90 days)
 - Only re-downloads if `.osm.pbf` file is older than a configurable threshold
-- Multi-stage Dockerfile keeps final image clean
-- Easy to deploy on Unraid, CI, or manually
+- Verifies validity of PBF, and redownloads if corrupted / incomplete PBF
+- Automatically detects Java-Heap-Size for Planetiler
 
 ## 🧪 Usage
 
@@ -36,6 +38,7 @@ Use the Makefile to simplify builds and runs:
 
 | Command        | Description                         |
 |----------------|-------------------------------------|
+| `make prepare` | Prepare your env for buildx         |
 | `make build`   | Build the Docker image              |
 | `make run`     | Run the image with local volume     |
 | `make push`    | Push the image to Docker Hub        |

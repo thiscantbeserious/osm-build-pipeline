@@ -24,10 +24,8 @@ echo "  PBF_EXPIRY_DAYS=$PBF_EXPIRY_DAYS"
 
 download_pbf() {
   echo "📥 Downloading PBF..."
-  curl -fL --retry 3 --retry-delay 5 \
-      --connect-timeout 10 \
-      --max-time 600 \
-      --parallel \
+  curl -fL --retry 10 --retry-delay 60 \
+      --connect-timeout 30 \
       -o "$OSM_PATH" "$OSM_URL"
 }
 
@@ -76,8 +74,7 @@ if ! validate_pbf; then
 fi
 
 echo "🧱 Running Planetiler..."
-exec java ${JAVA_OPTS:-$(/app/scripts/detect-java-heap.sh)} \
-  -cp /app/planetiler.jar \
-  com.onthegomap.planetiler.Planetiler \
+exec java ${JAVA_OPTS:-$(detect-java-heap.sh)} -jar /app/planetiler.jar \
+  --download \
   --osm_path="$OSM_PATH" \
   --output="$MBTILES_PATH"

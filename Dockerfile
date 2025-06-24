@@ -35,4 +35,4 @@ RUN chmod +x /app/scripts/*.sh
 # Runtime working dir (host-mounted)
 WORKDIR /data
 
-ENTRYPOINT ["/app/scripts/download_and_build.sh"]
+ENTRYPOINT ["/app/scripts/run.sh"]
