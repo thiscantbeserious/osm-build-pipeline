@@ -22,13 +22,6 @@ echo "  OSM_FILENAME=$OSM_FILENAME"
 echo "  MBTILES_FILENAME=$MBTILES_FILENAME"
 echo "  PBF_EXPIRY_DAYS=$PBF_EXPIRY_DAYS"
 
-download_pbf() {
-  echo "📥 Downloading PBF..."
-  curl -fL --retry 10 --retry-delay 60 \
-      --connect-timeout 30 \
-      -o "$OSM_PATH" "$OSM_URL"
-}
-
 validate_pbf() {
   echo "🔍 Validating downloaded PBF file..."
 
@@ -51,6 +44,17 @@ validate_pbf() {
   return 0
 }
 
+download_pbf() {
+  echo "📥 Downloading PBF..."
+  curl -fL --retry 10 --retry-delay 60 \
+      --connect-timeout 30 \
+      -o "$OSM_PATH" "$OSM_URL"
+  if ! validate_pbf; then
+    echo "❌ File invalid after download. Aborting."
+    exit 1
+  fi
+}
+
 if [ -f "$OSM_PATH" ]; then
   if ! validate_pbf; then
     echo "❌ Corrupt file detected. Re-downloading..."
@@ -65,12 +69,6 @@ if [ -f "$OSM_PATH" ]; then
 else
   echo "📥 No existing file. Downloading..."
   download_pbf
-fi
-
-# Final safety check
-if ! validate_pbf; then
-  echo "❌ File invalid even after download. Aborting."
-  exit 1
 fi
 
 echo "🧱 Running Planetiler..."
