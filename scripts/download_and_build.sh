@@ -27,7 +27,7 @@ download_pbf() {
   curl -fL --retry 3 --retry-delay 5 \
       --connect-timeout 10 \
       --max-time 600 \
-      --compressed \
+      --parallel \
       -o "$OSM_PATH" "$OSM_URL"
 }
 
