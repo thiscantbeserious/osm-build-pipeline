@@ -5,7 +5,7 @@ PLATFORMS  = linux/amd64,linux/arm64
 .PHONY: prepare build push run stop
 
 prepare:
-    docker run --rm --privileged tonistiigi/binfmt --install all
+	docker run --rm --privileged tonistiigi/binfmt --install all
 
 build:
 	@echo "🛠 Attempting multi-arch build with buildx..."
